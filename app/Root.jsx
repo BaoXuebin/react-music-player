@@ -1,9 +1,13 @@
 import React from 'react';
-import Header from './components/Header';
+import TopHeader from './components/TopHeader';
+import Player from './components/Player';
 
 function Root() {
     return (
-        <Header />
+        <div>
+            <TopHeader />
+            <Player />
+        </div>
     );
 }
 
