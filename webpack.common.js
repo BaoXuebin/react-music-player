@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
@@ -10,7 +11,7 @@ module.exports = {
     entry: {
         app: path.resolve(APP_PATH, 'app.jsx')
     },
-    devtool: 'eval-source-map', // 用于开发环境，能够追踪错误信息到具体的源文件
+    devtool: 'cheap-module-eval-source-map', // 用于开发环境，能够追踪错误信息到具体的源文件
     devServer: {
         contentBase: BUILD_PATH,
         historyApiFallback: true,
@@ -19,6 +20,9 @@ module.exports = {
     plugins: [
         // 清空 dist 文件夹
         new CleanWebpackPlugin(['dist']),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: ['polyfills', 'vendor'].reverse()
+        }),
         // html 模板
         new HtmlWebpackPlugin({
             filename: 'index.html',
@@ -28,7 +32,8 @@ module.exports = {
     output: {
         path: BUILD_PATH,
         filename: '[name].bundle.js',
-        publicPath: '/'
+        publicPath: '/',
+        sourceMapFilename: '[name].map'
     },
     module: {
         rules: [
@@ -45,13 +50,18 @@ module.exports = {
                 test: /\.less$/,
                 use: ['style-loader', 'css-loader', 'less-loader']
             },
-            // {
-            //     test: /\.(jpg|png)$/,
-            //     use: ['url-loader?limit=8012']
-            // },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/,
                 use: ['file-loader']
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|svg)$/,
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 100000
+                    }
+                }
             }
         ]
     },

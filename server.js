@@ -4,7 +4,7 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require("webpack-hot-middleware");
 
 const app = new express();
-const config = require('./webpack.config.js');
+const config = require('./webpack.prod.js');
 const compiler = webpack(config);
 // 监听端口
 const port = 3000;
