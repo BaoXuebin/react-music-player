@@ -7,7 +7,7 @@ import DefaultCover from '../../src/image/logo.png';
 function Cover({ image }) {
     const coverImg = image;
     return (
-        <Image src={coverImg} size="small" shape="circular" />
+        <Image src={coverImg} size="medium" shape="circular" />
     );
 }
 
