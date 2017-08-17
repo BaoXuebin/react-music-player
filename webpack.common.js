@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const ROOT_PATH = path.resolve(__dirname);
-const APP_PATH = path.resolve(ROOT_PATH, 'app');
+const APP_PATH = path.resolve(ROOT_PATH, 'src/app');
 const BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
 module.exports = {
@@ -52,7 +52,7 @@ module.exports = {
                 use: ['style-loader', 'css-loader', 'less-loader']
             },
             {
-                test: /\.(png|svg|jpg|jpeg|gif|mp3)$/,
+                test: /\.(png|svg|jpg|jpeg|gif|mp3|ogg)$/,
                 use: ['file-loader']
             },
             {

@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Image } from 'semantic-ui-react';
-import DefaultCover from '../../src/image/logo.png';
+import DefaultCover from '../../image/logo.png';
 
 // 封面图片
 function Cover({ image }) {
     const coverImg = image;
     return (
-        <Image src={coverImg} size="medium" shape="circular" />
+        <img src={coverImg} className="cover" alt="封面" />
     );
 }
 

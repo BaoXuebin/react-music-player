@@ -1,9 +1,10 @@
-import Jimucanting from '../src/audio/吉姆餐厅.mp3';
-import Shanyinludexiatian from '../src/audio/山阴路的夏天.mp3';
+import Jimucanting from '../audio/吉姆餐厅.mp3';
+import Shanyinludexiatian from '../audio/山阴路的夏天.mp3';
+import ShanyinludexiatianCover from '../image/山阴路的夏天.jpg';
+import Lilian from '../audio/莉莉安.ogg';
 
 export default class Data {
     constructor() {
-        this.current = 1;
         this.musics = this.musics();
         this.size = this.musics.length;
     }
@@ -21,7 +22,14 @@ export default class Data {
                 song: '山阴路的夏天',
                 singer: '李志',
                 time: 278,
-                src: Shanyinludexiatian
+                src: Shanyinludexiatian,
+                cover: ShanyinludexiatianCover
+            },
+            {
+                song: '莉莉安',
+                singer: '宋冬野',
+                time: 253,
+                src: Lilian
             }
         ];
     }

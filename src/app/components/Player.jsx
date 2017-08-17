@@ -6,8 +6,8 @@ import ActionBar from './ActionBar';
 import MusicInfo from './MusicInfo';
 import Data from '../Data';
 // import DefaultCover from '../../src/image/logo.png';
-import CDCover1 from '../../src/image/cd2.jpeg';
-import '../../src/style/player.less';
+import CDCover1 from '../../image/cd2.jpeg';
+import '../../style/player.less';
 
 class Player extends React.Component {
     constructor(props) {
@@ -44,6 +44,10 @@ class Player extends React.Component {
             if (this.state.status === 'play') {
                 this.audio.play();
             }
+        };
+        // 播放完毕
+        this.audio.onended = () => {
+            this.nextSong();
         };
     }
 
@@ -127,14 +131,19 @@ class Player extends React.Component {
             time: music.time
         };
         this.musicSrc = music.src;
+        if (music.cover) {
+            this.musicCover = music.cover;
+        } else {
+            this.musicCover = CDCover1;
+        }
     }
 
     render() {
         return (
             <Container textAlign="center" fluid className="player-container" >
-                <Cover image={CDCover1} />
+                <Cover image={this.musicCover} />
                 <MusicInfo music={this.musicInfo} />
-                <Progress value={this.state.progress} total="278" size="tiny" color="red" />
+                <Progress value={this.state.progress} total={this.musicInfo.time} size="tiny" color="red" />
                 <ActionBar status={this.state.status} type={this.state.type} events={this.actionBarEvents} />
                 <audio id="audio" src={this.musicSrc} loop={this.state.type === 'single-loop' && 'loop'} >
                     <track kind="captions" />
