@@ -15,7 +15,8 @@ module.exports = {
     devServer: {
         contentBase: BUILD_PATH,
         historyApiFallback: true,
-        inline: true
+        inline: true,
+        host: '0.0.0.0'
     },
     plugins: [
         // 清空 dist 文件夹

@@ -7,14 +7,24 @@ class ActionBar extends React.Component {
         super(props);
         this.handlePlayOrPause = this.handlePlayOrPause.bind(this);
         this.handleChangePlayType = this.handleChangePlayType.bind(this);
+        this.handlePrev = this.handlePrev.bind(this);
+        this.handleNext = this.handleNext.bind(this);
     }
 
     handlePlayOrPause() {
-        this.props.handlePlayOrPause();
+        this.props.events.handlePlayOrPause();
     }
 
     handleChangePlayType() {
-        this.props.handleChangePlayType();
+        this.props.events.handleChangePlayType();
+    }
+
+    handlePrev() {
+        this.props.events.handlePrev();
+    }
+
+    handleNext() {
+        this.props.events.handleNext();
     }
 
     render() {
@@ -22,10 +32,10 @@ class ActionBar extends React.Component {
         const playType = this.props.type;
         return (
             <Button.Group>
-                <Button icon="step backward" />
-                {playStatus === 'play' && <Button icon="play" onClick={this.handlePlayOrPause} />}
-                {playStatus === 'pause' && <Button icon="pause" onClick={this.handlePlayOrPause} />}
-                <Button icon="step forward" />
+                <Button icon="step backward" onClick={this.handlePrev} />
+                {playStatus === 'pause' && <Button icon="play" onClick={this.handlePlayOrPause} />}
+                {playStatus === 'play' && <Button icon="pause" onClick={this.handlePlayOrPause} />}
+                <Button icon="step forward" onClick={this.handleNext} />
                 {playType === 'loop' && <Button icon="repeat" onClick={this.handleChangePlayType} />}
                 {playType === 'single-loop' && <Button icon="lock" onClick={this.handleChangePlayType} />}
                 {playType === 'random' && <Button icon="shuffle" onClick={this.handleChangePlayType} />}
@@ -37,8 +47,12 @@ class ActionBar extends React.Component {
 ActionBar.propTypes = {
     status: PropTypes.string,
     type: PropTypes.string,
-    handlePlayOrPause: PropTypes.func.isRequired,
-    handleChangePlayType: PropTypes.func.isRequired
+    events: PropTypes.shape({
+        handlePlayOrPause: PropTypes.func.isRequired,
+        handleChangePlayType: PropTypes.func.isRequired,
+        handlePrev: PropTypes.func.isRequired,
+        handleNext: PropTypes.func.isRequired
+    }).isRequired
 };
 ActionBar.defaultProps = {
     status: 'pause',
