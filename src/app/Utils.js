@@ -1,4 +1,4 @@
-export default class Utils {
+class Utils {
     // int 转字符串，100 -> 1:40
     static parseTime(time) {
         let hour = parseInt(time / 3600, 10);
@@ -9,3 +9,5 @@ export default class Utils {
         return `${hour}${min}${sec}`;
     }
 }
+
+export default Utils;

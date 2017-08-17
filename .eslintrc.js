@@ -14,7 +14,10 @@ module.exports = {
                 "devDependencies": true,
                 "optionalDependencies": false,
                 "peerDependencies": false
-            }]
+            }],
+        // 首字母不必大写
+        "new-cap": "off",
+        "global-require": "off"
     },
     "env": {
         "browser": true,

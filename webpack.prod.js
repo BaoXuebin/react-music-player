@@ -21,7 +21,9 @@ module.exports = Merge(CommonConfig, {
                 keep_fnames: true
             },
             compress: {
-                screw_ie8: true
+                screw_ie8: true,
+                warnings: false,
+                drop_console: true
             },
             comments: false
         })

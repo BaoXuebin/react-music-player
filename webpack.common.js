@@ -8,9 +8,11 @@ const APP_PATH = path.resolve(ROOT_PATH, 'src/app');
 const BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
 module.exports = {
-    entry: {
-        app: path.resolve(APP_PATH, 'app.jsx')
-    },
+    entry: [
+        // 'react-hot-loader/patch',
+        'webpack-hot-middleware/client',
+        path.resolve(APP_PATH, 'app.jsx')
+    ],
     devtool: 'cheap-module-eval-source-map', // 用于开发环境，能够追踪错误信息到具体的源文件
     devServer: {
         contentBase: BUILD_PATH,
@@ -28,7 +30,11 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: path.resolve(ROOT_PATH, 'index.tpl.html')
-        })
+        }),
+        // 热更新
+        new webpack.HotModuleReplacementPlugin(),
+        // 保证出错时，页面不阻塞；且会在编译结束后报错
+        new webpack.NoEmitOnErrorsPlugin()
     ],
     output: {
         path: BUILD_PATH,
@@ -62,6 +68,15 @@ module.exports = {
                     options: {
                         limit: 100000
                     }
+                }
+            },
+            // 解决 UglifyJs 不支持 ES6 语法的问题
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+                query: {
+                    presets: ['es2015']
                 }
             }
         ]
