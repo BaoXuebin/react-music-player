@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'semantic-ui-react';
+import { Button, Popup } from 'semantic-ui-react';
 
 class ActionBar extends React.Component {
     constructor(props) {
@@ -30,15 +30,28 @@ class ActionBar extends React.Component {
     render() {
         const playStatus = this.props.status;
         const playType = this.props.type;
+        let playTypeIcon = 'repeat';
+        let popupText = '列表循环';
+        if (playType === 'single-loop') {
+            playTypeIcon = 'lock';
+            popupText = '单曲循环';
+        } else if (playType === 'random') {
+            playTypeIcon = 'shuffle';
+            popupText = '随机播放';
+        }
         return (
             <Button.Group>
                 <Button icon="step backward" onClick={this.handlePrev} />
                 {playStatus === 'pause' && <Button icon="play" onClick={this.handlePlayOrPause} />}
                 {playStatus === 'play' && <Button icon="pause" onClick={this.handlePlayOrPause} />}
                 <Button icon="step forward" onClick={this.handleNext} />
-                {playType === 'loop' && <Button icon="repeat" onClick={this.handleChangePlayType} />}
-                {playType === 'single-loop' && <Button icon="lock" onClick={this.handleChangePlayType} />}
-                {playType === 'random' && <Button icon="shuffle" onClick={this.handleChangePlayType} />}
+                <Popup
+                    trigger={<Button icon={playTypeIcon} onClick={this.handleChangePlayType} />}
+                    on="hover"
+                    content={popupText}
+                    position="right center"
+                    size="mini"
+                />
             </Button.Group>
         );
     }

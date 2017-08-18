@@ -9,7 +9,7 @@ const BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
 module.exports = {
     entry: [
-        // 'react-hot-loader/patch',
+        'react-hot-loader/patch',
         'webpack-hot-middleware/client',
         path.resolve(APP_PATH, 'app.jsx')
     ],
