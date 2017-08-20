@@ -1,16 +1,18 @@
 import React from 'react';
-import { Segment, Header, Icon } from 'semantic-ui-react';
+import { Header, Icon } from 'semantic-ui-react';
+
+import '../../style/header.less';
 
 function TopHeader() {
     return (
-        <Segment>
+        <div className="component-header">
             <Header as="h2">
                 <Icon name="music" color="red" />
                 <Header.Content>
                     Music
                 </Header.Content>
             </Header>
-        </Segment>
+        </div>
     );
 }
 

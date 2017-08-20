@@ -1,12 +1,19 @@
 class Utils {
     // int 转字符串，100 -> 1:40
     static parseTime(time) {
-        let hour = parseInt(time / 3600, 10);
+        let t = 0;
+        if (time) {
+            t = time;
+        }
+        let hour = parseInt(t / 3600, 10);
         hour = hour === 0 ? '' : `${hour}:`;
-        let min = parseInt((time % 3600) / 60, 10);
-        min = min === 0 ? '' : `${min}:`;
-        const sec = parseInt(time % 60, 10);
-        return `${hour}${min}${sec}`;
+        const min = this.prefixInteger(parseInt((t % 3600) / 60, 10), 2);
+        const sec = this.prefixInteger(parseInt(t % 60, 10), 2);
+        return `${hour}${min}:${sec}`;
+    }
+
+    static prefixInteger(num, len) {
+        return (Array(len).join('0') + num).slice(-len);
     }
 }
 

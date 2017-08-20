@@ -1,0 +1,33 @@
+.info-container {
+    width: 60%;
+    margin-top: 20px;
+    margin-bottom: 80px;
+    img {
+        margin: 1em auto;
+        width: 350px;
+        height: 350px;
+        border-radius: 175px;
+        overflow: hidden;
+        margin-bottom: 2em;
+
+        animation: rotate 30s linear infinite;
+    }
+
+    .pause {
+        animation-play-state: paused;
+        -webkit-animation-play-state: paused; /* Safari 和 Chrome */
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+.ui.container {
+    width: 60%;
+}

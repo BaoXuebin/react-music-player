@@ -15,20 +15,17 @@ export default class Data {
             {
                 song: '吉姆餐厅',
                 singer: '赵雷',
-                time: 355,
                 src: Jimucanting
             },
             {
                 song: '山阴路的夏天',
                 singer: '李志',
-                time: 278,
                 src: Shanyinludexiatian,
                 cover: ShanyinludexiatianCover
             },
             {
                 song: '莉莉安',
                 singer: '宋冬野',
-                time: 253,
                 src: Lilian
             }
         ];

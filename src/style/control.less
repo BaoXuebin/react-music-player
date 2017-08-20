@@ -1,0 +1,29 @@
+.Control {
+    position: fixed;
+    width: 100%;
+    max-height: 60px;
+    bottom: 0;
+    box-shadow: 0 0 1px black;
+    background-color: white;
+    padding: .7em 2em;
+    line-height: 30px;
+
+    .progress-bar{
+        .progress {
+            margin: 0;
+            .bar {
+                // 去除进度条的最小长度
+                min-width: 0;
+            }
+        }
+    }
+
+    .progress-time {
+        display: inline-block;
+        margin-right: 2em;
+    }
+
+    i:hover {
+        cursor: pointer;
+    }
+}
