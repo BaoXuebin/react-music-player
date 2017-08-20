@@ -1,8 +1,11 @@
 import React from 'react';
+import moment from 'moment';
+import { Sidebar } from 'semantic-ui-react';
 
 import TopHeader from './components/TopHeader';
 import Info from './components/Info';
 import Control from './components/Control';
+import MusicList from './components/MusicList';
 import Action from './Action';
 
 export default class Root extends React.Component {
@@ -19,10 +22,13 @@ export default class Root extends React.Component {
         this.changeVolume = this.changeVolume.bind(this);
         this.loadFinish = this.loadFinish.bind(this);
         this.toggleVolume = this.toggleVolume.bind(this);
+        this.togglePanel = this.togglePanel.bind(this);
+        this.handlePlaySong = this.handlePlaySong.bind(this);
     }
     // 组件将要挂载
     componentWillMount() {
         this.action.initMusic();
+        this.updateTime = moment().format('YYYY-MM-DD hh:mm:ss');
     }
     // 组件已经挂载
     componentDidMount() {
@@ -107,12 +113,35 @@ export default class Root extends React.Component {
         this.action.nextSong();
     }
 
+    togglePanel() {
+        this.action.toggleListPanel();
+    }
+
+    // 列表点击音乐，播放音乐
+    // id 被点击的歌曲 id
+    handlePlaySong(id) {
+        this.action.playSong(id);
+    }
+
+    // {panel === 'info' && <Info music={this.state.music} coverRotate={coverRotate} />}
+    // {panel === 'list' && <MusicList />}
     render() {
         const coverRotate = this.state.loaded && this.state.status === 'play';
         return (
             <div>
                 <TopHeader />
-                <Info music={this.state.music} coverRotate={coverRotate} />
+                <Sidebar.Pushable>
+                    <Sidebar animation="overlay" visible={this.state.listVisible} width="wide" direction="right">
+                        <MusicList
+                            music={this.state.music}
+                            handlePlaySong={this.handlePlaySong}
+                            updateTime={this.updateTime}
+                        />
+                    </Sidebar>
+                    <Sidebar.Pusher>
+                        <Info music={this.state.music} coverRotate={coverRotate} />
+                    </Sidebar.Pusher>
+                </Sidebar.Pushable>
                 <Control
                     playStatus={this.state.status}
                     playType={this.state.type}
@@ -126,6 +155,7 @@ export default class Root extends React.Component {
                     handleChangeProgress={this.changeProgress}
                     handleChangeVolume={this.changeVolume}
                     handleToggleVolume={this.toggleVolume}
+                    handleToggleListPanel={this.togglePanel}
                 />
                 <audio id="audio" src={this.state.music.src} loop={this.state.type === 'single-loop' && 'loop'} >
                     <track kind="captions" />

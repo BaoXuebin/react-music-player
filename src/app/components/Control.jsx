@@ -59,7 +59,7 @@ class Control extends React.Component {
                         size="mini"
                     />
                     <Popup
-                        trigger={<Button icon="list" floated="left" />}
+                        trigger={<Button icon="list" floated="left" onClick={this.props.handleToggleListPanel} />}
                         on="hover"
                         content="播放列表"
                         position="top center"
@@ -83,7 +83,8 @@ Control.propTypes = {
     handleNextSong: PropTypes.func.isRequired,
     handleChangeProgress: PropTypes.func.isRequired,
     handleChangeVolume: PropTypes.func.isRequired,
-    handleToggleVolume: PropTypes.func.isRequired
+    handleToggleVolume: PropTypes.func.isRequired,
+    handleToggleListPanel: PropTypes.func.isRequired
 };
 Control.defaultProps = {
     playStatus: 'pause',

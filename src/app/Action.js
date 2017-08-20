@@ -16,7 +16,8 @@ export default class Action {
             progress: 0, // 当前播放进度
             volume: 0, // 当前音量
             lastVolume: 0, // 静音前音量
-            loaded: false // 歌曲是否加载完毕
+            loaded: false, // 歌曲是否加载完毕
+            listVisible: false
         };
     }
 
@@ -101,6 +102,25 @@ export default class Action {
             this.component.setState({
                 volume: this.component.state.lastVolume,
                 lastVolume: this.component.state.volume
+            });
+        }
+    }
+
+    // 切换面板
+    toggleListPanel() {
+        this.component.setState({
+            listVisible: !this.component.state.listVisible
+        });
+    }
+
+    // 播放指定 id 的音乐
+    playSong(id) {
+        const music = this.data.getById(id);
+        if (music) {
+            this.component.setState({
+                music,
+                status: 'play',
+                progress: 0
             });
         }
     }

@@ -13,17 +13,20 @@ export default class Data {
         this.current = 1;
         return [
             {
+                id: 1,
                 song: '吉姆餐厅',
                 singer: '赵雷',
                 src: Jimucanting
             },
             {
+                id: 2,
                 song: '山阴路的夏天',
                 singer: '李志',
                 src: Shanyinludexiatian,
                 cover: ShanyinludexiatianCover
             },
             {
+                id: 3,
                 song: '莉莉安',
                 singer: '宋冬野',
                 src: Lilian
@@ -36,6 +39,14 @@ export default class Data {
             return this.musics[index];
         }
         return this.musics[this.current - 1];
+    }
+
+    getById(id) {
+        const targets = this.musics.filter(music => music.id === id);
+        if (targets.length > 0) {
+            return targets[0];
+        }
+        return null;
     }
 
     prev() {
