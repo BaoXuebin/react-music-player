@@ -31,7 +31,7 @@ class Control extends React.Component {
         const isPlay = this.props.playStatus === 'play';
         const playType = this.getPlayType();
         const currentTime = this.props.duration * this.props.progress;
-        const mute = this.props.volume === 0;
+        const mute = this.props.mute;
         return (
             <div className="Control">
                 <Button.Group floated="left">
@@ -42,7 +42,7 @@ class Control extends React.Component {
                 <CustomProgress percent={this.props.progress} width="53%" inline margin="0 1em 0 2em" handleChangeProgress={this.props.handleChangeProgress} />
                 <CustomProgressTime value={currentTime} total={this.props.duration} />
                 <Icon name={mute ? 'volume off' : 'volume down'} size="large" onClick={this.props.handleToggleVolume} />
-                <CustomProgress percent={this.props.volume} width="10%" inline handleChangeProgress={this.props.handleChangeVolume} />
+                <CustomProgress percent={this.props.volume} color={mute ? 'grey' : 'red'} width="10%" inline handleChangeProgress={this.props.handleChangeVolume} />
                 <Button.Group floated="right">
                     <Popup
                         trigger={<Button icon={playType.icon} onClick={this.props.handleChangePlayType} />}
@@ -76,6 +76,7 @@ Control.propTypes = {
     playType: PropTypes.string,
     progress: PropTypes.number,
     volume: PropTypes.number,
+    mute: PropTypes.bool.isRequired,
     duration: PropTypes.number,
     handleChangePlayStatus: PropTypes.func.isRequired,
     handleChangePlayType: PropTypes.func.isRequired,

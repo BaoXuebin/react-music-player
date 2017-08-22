@@ -1,35 +1,69 @@
-import Jimucanting from '../audio/吉姆餐厅.mp3';
-import Shanyinludexiatian from '../audio/山阴路的夏天.mp3';
-import ShanyinludexiatianCover from '../image/山阴路的夏天.jpg';
-import Lilian from '../audio/莉莉安.ogg';
+// import Jimucanting from '../audio/吉姆餐厅.ogg';
+// import JimucantingCover from '../image/吉姆餐厅.jpg';
+// import Shanyinludexiatian from '../audio/山阴路的夏天.ogg';
+// import ShanyinludexiatianCover from '../image/F.jpg';
+// import Lilian from '../audio/莉莉安.ogg';
+// import LilianCover from '../image/莉莉安.jpg';
+import fetch from 'isomorphic-fetch';
 
 export default class Data {
     constructor() {
+        // this.root = 'http://www.xdbin.com/image/lab/player/';
+        this.root = 'http://localhost:8080/selfworld/image/lab/player/';
         this.musics = this.musics();
         this.size = this.musics.length;
+    }
+
+    static fetch() {
+        fetch('http://localhost:8080/selfworld/music')
+            .then(response => response.json());
+        // .then(json => console.log(json));
     }
 
     musics() {
         this.current = 1;
         return [
+            // {
+            //     id: 1,
+            //     song: '吉姆餐厅',
+            //     singer: '赵雷',
+            //     src: Jimucanting,
+            //     cover: JimucantingCover
+            // },
+            // {
+            //     id: 2,
+            //     song: '山阴路的夏天',
+            //     singer: '李志',
+            //     src: Shanyinludexiatian,
+            //     cover: ShanyinludexiatianCover
+            // },
+            // {
+            //     id: 3,
+            //     song: '莉莉安',
+            //     singer: '宋冬野',
+            //     src: Lilian,
+            //     cover: LilianCover
+            // }
             {
                 id: 1,
                 song: '吉姆餐厅',
                 singer: '赵雷',
-                src: Jimucanting
+                src: `${this.root}jmct.ogg`,
+                cover: `${this.root}jmct.jpg`
             },
             {
                 id: 2,
                 song: '山阴路的夏天',
                 singer: '李志',
-                src: Shanyinludexiatian,
-                cover: ShanyinludexiatianCover
+                src: `${this.root}syldxt.ogg`,
+                cover: `${this.root}syldxt.jpg`
             },
             {
                 id: 3,
                 song: '莉莉安',
                 singer: '宋冬野',
-                src: Lilian
+                src: `${this.root}lla.ogg`,
+                cover: `${this.root}lla.jpg`
             }
         ];
     }

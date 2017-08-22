@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Header, Container } from 'semantic-ui-react';
 
-import DefaultCover from '../../image/cd2.jpeg';
+import DefaultCover from '../../image/logo.png';
 import '../../style/info.less';
 
 /*

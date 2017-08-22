@@ -21,34 +21,6 @@ export default class Action {
         };
     }
 
-    // 修改播放状态，暂停或播放
-    changePlayStatus() {
-        let status = this.component.state.status;
-        if (status === 'play') {
-            status = 'pause';
-        } else if (status === 'pause') {
-            status = 'play';
-        }
-        this.component.setState({
-            status
-        });
-    }
-
-    // 修改播放类型，单曲循环或列表循环或随机播放
-    changePlayType() {
-        let type = this.component.state.type;
-        if (type === 'loop') {
-            type = 'single-loop';
-        } else if (type === 'single-loop') {
-            type = 'random';
-        } else {
-            type = 'loop';
-        }
-        this.component.setState({
-            type
-        });
-    }
-
     // 获取歌曲信息
     initMusic() {
         this.component.setState({
@@ -88,22 +60,6 @@ export default class Action {
             music,
             progress: 0
         });
-    }
-
-    // 关闭音量
-    toggleVolume() {
-        const volume = this.component.state.volume;
-        if (volume !== 0) {
-            this.component.setState({
-                lastVolume: this.component.state.volume,
-                volume: 0
-            });
-        } else {
-            this.component.setState({
-                volume: this.component.state.lastVolume,
-                lastVolume: this.component.state.volume
-            });
-        }
     }
 
     // 切换面板

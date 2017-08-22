@@ -1,29 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid';
 import { List, Header } from 'semantic-ui-react';
 
 import Data from '../Data';
 import '../../style/musiclist.less';
 
-const musics = new Data().musics;
-
 // music 当前选中的音乐
-export default function MusicList({ music, handlePlaySong, updateTime }) {
-    const itemHtml = musics.map((m) => {
-        const current = m.id === music.id;
-        return <MusicListItem key={uuid.v4()} current={current} music={m} handlePlaySong={handlePlaySong} />;
-    });
-    return (
-        <div className="musiclist-container">
-            <Header dividing>
-                <span className="updateTime">歌单更新于{updateTime}</span>
-            </Header>
-            <List divided relaxed animated celled verticalAlign="middle">
-                {itemHtml}
-            </List>
-        </div>
-    );
+export default class MusicList extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.musics = new Data().musics;
+        this.buildItems = this.buildItems.bind(this);
+    }
+
+    buildItems() {
+        return this.musics.map((m) => {
+            const current = m.id === this.props.music.id;
+            return <MusicListItem key={m.id} current={current} music={m} handlePlaySong={this.props.handlePlaySong} />;
+        });
+    }
+
+    render() {
+        return (
+            <div className="musiclist-container">
+                <Header dividing>
+                    <span className="updateTime">歌单更新于{this.props.updateTime}</span>
+                </Header>
+                <List divided relaxed celled animated verticalAlign="middle">
+                    {this.buildItems()}
+                </List>
+            </div>
+        );
+    }
 }
 
 MusicList.propTypes = {
