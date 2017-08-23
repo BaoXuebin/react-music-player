@@ -1,26 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { Sidebar } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 import {
-    play, pause, changeProgress, changeVolume, closeMute, openMute,
-    changePlayType
+    play, pause, changeProgress, changeVolume, closeMute, openMute, initPlayer,
+    changePlayType, playSpecifiedSong, fetchMusicsIfNeeded, toggleSlideBar, getMusicDuration
 } from '../action/action';
 import TopHeader from '../components/TopHeader';
 import Info from '../components/Info';
 import Control from '../components/Control';
 import MusicList from '../components/MusicList';
-import Action from '../Action';
-import Data from '../Data';
+import Utils from '../Utils';
 
 class Player extends React.Component {
     constructor(props) {
         super(props);
-        this.action = new Action(this);
         // 初始化状态
-        this.action.initState();
         this.changePlayStatus = this.changePlayStatus.bind(this);
         this.changePlayType = this.changePlayType.bind(this);
         this.prevSong = this.prevSong.bind(this);
@@ -31,13 +27,13 @@ class Player extends React.Component {
         this.toggleVolume = this.toggleVolume.bind(this);
         this.togglePanel = this.togglePanel.bind(this);
         this.handlePlaySong = this.handlePlaySong.bind(this);
+        this.handleRefresh = this.handleRefresh.bind(this);
     }
     // 组件将要挂载
     componentWillMount() {
-        this.action.initMusic();
-        this.updateTime = moment().format('YYYY-MM-DD hh:mm:ss');
-        // 从接口获取音乐列表
-        Data.fetch();
+        this.props.dispatch(initPlayer());
+        // 请求接口获取音乐列表
+        this.props.dispatch(fetchMusicsIfNeeded());
     }
     // 组件已经挂载
     componentDidMount() {
@@ -46,18 +42,26 @@ class Player extends React.Component {
         }
         // 加载完成
         this.audio.oncanplay = this.loadFinish;
+        // 加载失败
+        // this.audio.onerror = () => {
+        //
+        // };
         // 播放完毕
         this.audio.onended = this.nextSong;
     }
     // 歌曲加载完成
     loadFinish() {
-        this.setState({
-            duration: this.audio.duration,
-            volume: this.audio.volume,
-            loaded: true
-        });
-        if (this.state.status === 'play') {
+        this.props.dispatch(getMusicDuration(this.audio.duration));
+        const status = this.props.status;
+        if (status === 'play') {
             this.audio.play();
+            if (this.task) {
+                clearInterval(this.task);
+            }
+            this.task = setInterval(() => {
+                const progress = this.audio.currentTime / this.audio.duration;
+                this.props.dispatch(changeProgress(progress));
+            }, 500);
         }
     }
     // 修改播放状态
@@ -71,12 +75,12 @@ class Player extends React.Component {
             }
             this.props.dispatch(pause());
         } else if (status === 'pause') {
-            audio.play();
+            this.props.dispatch(play());
+            this.audio.play();
             this.task = setInterval(() => {
                 const progress = this.audio.currentTime / this.audio.duration;
                 this.props.dispatch(changeProgress(progress));
             }, 500);
-            this.props.dispatch(play());
         }
     }
     // 修改播放类型
@@ -117,58 +121,85 @@ class Player extends React.Component {
     }
     // 上一曲
     prevSong() {
-        this.action.preSong();
+        const { currentMusicId, playType, musics } = this.props;
+        if (playType === 'loop') { // 列表循环
+            this.props.dispatch(playSpecifiedSong(Utils.last(currentMusicId, musics)));
+        } else if (playType === 'single-loop') { // 单曲循环
+            this.props.dispatch(playSpecifiedSong(currentMusicId));
+        } else { // 随机播放
+            this.props.dispatch(playSpecifiedSong(Utils.random(currentMusicId, musics)));
+        }
     }
     // 下一曲
     nextSong() {
-        this.action.nextSong();
+        const { currentMusicId, playType, musics } = this.props;
+        if (playType === 'loop') { // 列表循环
+            this.props.dispatch(playSpecifiedSong(Utils.next(currentMusicId, musics)));
+        } else if (playType === 'single-loop') { // 单曲循环
+            this.props.dispatch(playSpecifiedSong(currentMusicId));
+        } else { // 随机播放
+            this.props.dispatch(playSpecifiedSong(Utils.random(currentMusicId, musics)));
+        }
     }
 
     togglePanel() {
-        this.action.toggleListPanel();
+        const visible = this.props.listVisible;
+        this.props.dispatch(toggleSlideBar(visible));
     }
 
     // 列表点击音乐，播放音乐
     // id 被点击的歌曲 id
     handlePlaySong(id) {
-        this.action.playSong(id);
+        this.props.dispatch(playSpecifiedSong(id));
+    }
+    // 刷新歌单
+    handleRefresh() {
+        this.props.dispatch(fetchMusicsIfNeeded());
     }
 
     render() {
-        const { status, progress, volume, mute, playType } = this.props;
-        const coverRotate = this.state.loaded && status === 'play';
+        const { ifReady, currentMusicId, status, progress, volume, mute,
+            playType, listVisible, musics, receivedAt, duration } = this.props;
+        const coverRotate = status === 'play';
+        const music = Utils.get(currentMusicId, musics);
         return (
             <div>
-                <TopHeader />
-                <Sidebar.Pushable>
-                    <Sidebar animation="overlay" visible={this.state.listVisible} width="wide" direction="right">
-                        <MusicList
-                            music={this.state.music}
-                            handlePlaySong={this.handlePlaySong}
-                            updateTime={this.updateTime}
+                {ifReady &&
+                    <div>
+                        <TopHeader />
+                        <Sidebar.Pushable>
+                            <Sidebar animation="overlay" color="white" visible={listVisible} width="wide" direction="right">
+                                <MusicList
+                                    currentMusicId={currentMusicId}
+                                    musics={musics}
+                                    handlePlaySong={this.handlePlaySong}
+                                    handleRefresh={this.handleRefresh}
+                                    receivedAt={receivedAt}
+                                />
+                            </Sidebar>
+                            <Sidebar.Pusher>
+                                <Info music={music} coverRotate={coverRotate} />
+                            </Sidebar.Pusher>
+                        </Sidebar.Pushable>
+                        <Control
+                            playStatus={status}
+                            playType={playType}
+                            progress={progress}
+                            volume={volume}
+                            mute={mute}
+                            duration={duration}
+                            handleChangePlayStatus={this.changePlayStatus}
+                            handleChangePlayType={this.changePlayType}
+                            handlePreSong={this.prevSong}
+                            handleNextSong={this.nextSong}
+                            handleChangeProgress={this.changeProgress}
+                            handleChangeVolume={this.changeVolume}
+                            handleToggleVolume={this.toggleVolume}
+                            handleToggleListPanel={this.togglePanel}
                         />
-                    </Sidebar>
-                    <Sidebar.Pusher>
-                        <Info music={this.state.music} coverRotate={coverRotate} />
-                    </Sidebar.Pusher>
-                </Sidebar.Pushable>
-                <Control
-                    playStatus={status}
-                    playType={playType}
-                    progress={progress}
-                    volume={volume}
-                    mute={mute}
-                    duration={this.state.duration}
-                    handleChangePlayStatus={this.changePlayStatus}
-                    handleChangePlayType={this.changePlayType}
-                    handlePreSong={this.prevSong}
-                    handleNextSong={this.nextSong}
-                    handleChangeProgress={this.changeProgress}
-                    handleChangeVolume={this.changeVolume}
-                    handleToggleVolume={this.toggleVolume}
-                    handleToggleListPanel={this.togglePanel}
-                />
-                <audio id="audio" src={this.state.music.src} loop={this.state.type === 'single-loop' && 'loop'} >
+                    </div>
+                }
+                <audio id="audio" src={music ? music.src : ''} loop={playType === 'single-loop' && 'loop'} >
                     <track kind="captions" />
                 </audio>
             </div>
@@ -177,22 +208,44 @@ class Player extends React.Component {
 }
 
 Player.propTypes = {
+    ifReady: PropTypes.bool.isRequired,
     status: PropTypes.string.isRequired,
     progress: PropTypes.number.isRequired,
     volume: PropTypes.number.isRequired,
     mute: PropTypes.bool.isRequired,
     playType: PropTypes.string.isRequired,
+    currentMusicId: PropTypes.string.isRequired,
+    musics: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        song: PropTypes.string,
+        singer: PropTypes.string,
+        src: PropTypes.string.isRequired,
+        cover: PropTypes.string
+    })).isRequired,
+    listVisible: PropTypes.bool.isRequired,
+    receivedAt: PropTypes.string.isRequired,
+    duration: PropTypes.number,
     dispatch: PropTypes.func.isRequired
+};
+Player.defaultProps = {
+    duration: 0
 };
 
 function mapStateToProps(state) {
-    const { status, progress, volume, mute, playType } = state;
+    const { currentMusicId, ifReady, status, progress, volume, mute, playType,
+        listVisible, musics, receivedAt, duration } = state;
     return {
+        currentMusicId,
+        ifReady,
         status,
         progress,
         volume,
         mute,
-        playType
+        playType,
+        listVisible,
+        musics,
+        receivedAt,
+        duration
     };
 }
 

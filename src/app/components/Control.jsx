@@ -29,6 +29,7 @@ class Control extends React.Component {
 
     render() {
         const isPlay = this.props.playStatus === 'play';
+        const isLoading = this.props.playStatus === 'loading';
         const playType = this.getPlayType();
         const currentTime = this.props.duration * this.props.progress;
         const mute = this.props.mute;
@@ -36,7 +37,7 @@ class Control extends React.Component {
             <div className="Control">
                 <Button.Group floated="left">
                     <Button icon="step backward" color="red" onClick={this.props.handlePreSong} />
-                    <Button icon={isPlay ? 'pause' : 'play'} color="red" onClick={this.props.handleChangePlayStatus} />
+                    <Button loading={isLoading} icon={isPlay ? 'pause' : 'play'} color="red" onClick={this.props.handleChangePlayStatus} />
                     <Button icon="step forward" color="red" onClick={this.props.handleNextSong} />
                 </Button.Group>
                 <CustomProgress percent={this.props.progress} width="53%" inline margin="0 1em 0 2em" handleChangeProgress={this.props.handleChangeProgress} />

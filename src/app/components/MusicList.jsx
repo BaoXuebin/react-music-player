@@ -1,21 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { List, Header } from 'semantic-ui-react';
+import { List, Header, Icon } from 'semantic-ui-react';
 
-import Data from '../Data';
 import '../../style/musiclist.less';
 
 // music 当前选中的音乐
 export default class MusicList extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.musics = new Data().musics;
         this.buildItems = this.buildItems.bind(this);
     }
 
     buildItems() {
-        return this.musics.map((m) => {
-            const current = m.id === this.props.music.id;
+        const { currentMusicId, musics } = this.props;
+        return musics.map((m) => {
+            const current = m.id === currentMusicId;
             return <MusicListItem key={m.id} current={current} music={m} handlePlaySong={this.props.handlePlaySong} />;
         });
     }
@@ -24,7 +23,10 @@ export default class MusicList extends React.PureComponent {
         return (
             <div className="musiclist-container">
                 <Header dividing>
-                    <span className="updateTime">歌单更新于{this.props.updateTime}</span>
+                    <Header.Content>
+                        <span className="updateTime">歌单更新于{this.props.receivedAt}</span>
+                        <Icon className="refreshBtn" name="refresh" onClick={this.props.handleRefresh} />
+                    </Header.Content>
                 </Header>
                 <List divided relaxed celled animated verticalAlign="middle">
                     {this.buildItems()}
@@ -35,16 +37,17 @@ export default class MusicList extends React.PureComponent {
 }
 
 MusicList.propTypes = {
-    music: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        song: PropTypes.string.isRequired,
-        singer: PropTypes.string.isRequired
-    }).isRequired,
+    currentMusicId: PropTypes.string.isRequired,
+    musics: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        song: PropTypes.string,
+        singer: PropTypes.string,
+        src: PropTypes.string.isRequired,
+        cover: PropTypes.string
+    })).isRequired,
+    receivedAt: PropTypes.string.isRequired,
     handlePlaySong: PropTypes.func.isRequired,
-    updateTime: PropTypes.string
-};
-MusicList.defaultProps = {
-    updateTime: '2017-08-20 23:55:18'
+    handleRefresh: PropTypes.func.isRequired
 };
 
 function MusicListItem({ current, music, handlePlaySong }) {
@@ -67,7 +70,7 @@ function MusicListItem({ current, music, handlePlaySong }) {
 MusicListItem.propTypes = {
     current: PropTypes.bool,
     music: PropTypes.shape({
-        id: PropTypes.number.isRequired,
+        id: PropTypes.string.isRequired,
         song: PropTypes.string.isRequired,
         singer: PropTypes.string.isRequired
     }).isRequired,
