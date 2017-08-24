@@ -14,6 +14,7 @@ export const OPEN_MUTE = 'OPEN_MUTE';
 // 异步操作
 export const REQUEST_MUSICS = 'REQUEST_MUSICS';
 export const RECEIVE_MUSICS = 'RECEIVE_MUSICS';
+// const URL = 'http://xdbin.com/music';
 const URL = 'http://localhost:8080/selfworld/music';
 // 切换侧栏的显示状态
 export const OPEN_SLIDEBAR = 'OPEN_SLIDEBAR';
@@ -122,7 +123,7 @@ function requestMusics() {
 
 function receiveMusics(musics, currentMusicId) {
     let musicId = currentMusicId;
-    if (musicId || musicId === '') {
+    if (!musicId || musicId === '') {
         musicId = musics[0].id;
     }
     return {

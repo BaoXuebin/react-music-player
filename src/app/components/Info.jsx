@@ -8,29 +8,15 @@ import '../../style/info.less';
 /*
  * 显示歌曲的封面信息，歌手等信息
  */
-class Info extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { rotate: true };
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    handleClick() {
-        this.setState({
-            rotate: !this.state.rotate
-        });
-    }
-
+class Info extends React.PureComponent {
     render() {
-        const music = this.props.music;
-        const rotate = this.props.coverRotate;
+        const { music, coverRotate } = this.props;
         return (
             <Container textAlign="center" className="info-container" >
                 <img
                     src={music.cover || DefaultCover}
-                    className={rotate ? '' : 'pause'}
+                    className={coverRotate ? '' : 'pause'}
                     alt="封面"
-                    onClick={this.handleClick}
                     role="presentation"
                 />
                 <div>
