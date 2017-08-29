@@ -2,7 +2,7 @@ import {
     PLAY, PAUSE, LOADING, PLAY_SPECIFIED_SONG, CHANGE_PROGRESS, INIT_PLAYER,
     CHANGE_VOLUME, OPEN_MUTE, CLOSE_MUTE, CHANGE_PLAY_TYPE,
     REQUEST_MUSICS, RECEIVE_MUSICS, OPEN_SLIDEBAR, CLOSE_SLIDEBAR,
-    GET_MUSIC_DURATION
+    GET_MUSIC_DURATION, CHANGE_WINDOW_SIZE
 } from '../action/action';
 
 function actionReducers(state = {
@@ -55,6 +55,8 @@ function actionReducers(state = {
             return Object.assign({}, state, { listVisible: action.listVisible });
         case GET_MUSIC_DURATION:
             return Object.assign({}, state, { duration: action.duration });
+        case CHANGE_WINDOW_SIZE:
+            return Object.assign({}, state, { width: action.width, height: action.width });
         default:
             return state;
     }

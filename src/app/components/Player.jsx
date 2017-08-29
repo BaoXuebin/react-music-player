@@ -5,13 +5,15 @@ import { connect } from 'react-redux';
 
 import {
     play, pause, changeProgress, changeVolume, closeMute, openMute, initPlayer,
-    changePlayType, playSpecifiedSong, fetchMusicsIfNeeded, toggleSlideBar, getMusicDuration
+    changePlayType, playSpecifiedSong, fetchMusicsIfNeeded, toggleSlideBar, getMusicDuration,
+    changeWindowSize
 } from '../action/action';
 import TopHeader from '../components/TopHeader';
 import Info from '../components/Info';
 import Control from '../components/Control';
 import MusicList from '../components/MusicList';
 import Utils from '../Utils';
+import '../../style/player.less';
 
 class Player extends React.Component {
     constructor(props) {
@@ -34,6 +36,18 @@ class Player extends React.Component {
         this.props.dispatch(initPlayer());
         // 请求接口获取音乐列表
         this.props.dispatch(fetchMusicsIfNeeded());
+        // 初始化窗口大小
+        this.props.dispatch(changeWindowSize(
+            document.body.offsetWidth,
+            document.body.offsetHeight
+        ));
+        // 改变窗口大小
+        window.onresize = () => {
+            this.props.dispatch(changeWindowSize(
+                document.body.offsetWidth,
+                document.body.offsetHeight
+            ));
+        };
     }
     // 组件已经挂载
     componentDidMount() {
@@ -159,7 +173,7 @@ class Player extends React.Component {
 
     render() {
         const { ifReady, currentMusicId, status, progress, volume, mute,
-            playType, listVisible, musics, receivedAt, duration } = this.props;
+            playType, listVisible, musics, receivedAt, duration, width, height } = this.props;
         const coverRotate = status === 'play';
         const music = Utils.get(currentMusicId, musics);
         return (
@@ -168,7 +182,7 @@ class Player extends React.Component {
                     <div>
                         <TopHeader />
                         <Sidebar.Pushable>
-                            <Sidebar animation="overlay" color="white" visible={listVisible} width="wide" direction="right">
+                            <Sidebar animation="overlay" className="slide-music-list" visible={listVisible} width="wide" direction="right">
                                 <MusicList
                                     currentMusicId={currentMusicId}
                                     musics={musics}
@@ -182,6 +196,8 @@ class Player extends React.Component {
                             </Sidebar.Pusher>
                         </Sidebar.Pushable>
                         <Control
+                            width={width}
+                            height={height}
                             playStatus={status}
                             playType={playType}
                             progress={progress}
@@ -225,15 +241,19 @@ Player.propTypes = {
     listVisible: PropTypes.bool.isRequired,
     receivedAt: PropTypes.string.isRequired,
     duration: PropTypes.number,
+    width: PropTypes.number,
+    height: PropTypes.number,
     dispatch: PropTypes.func.isRequired
 };
 Player.defaultProps = {
-    duration: 0
+    duration: 0,
+    width: 0,
+    height: 0
 };
 
 function mapStateToProps(state) {
     const { currentMusicId, ifReady, status, progress, volume, mute, playType,
-        listVisible, musics, receivedAt, duration } = state;
+        listVisible, musics, receivedAt, duration, width, height } = state;
     return {
         currentMusicId,
         ifReady,
@@ -245,7 +265,9 @@ function mapStateToProps(state) {
         listVisible,
         musics,
         receivedAt,
-        duration
+        duration,
+        width,
+        height
     };
 }
 

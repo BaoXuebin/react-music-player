@@ -20,6 +20,16 @@ const URL = 'http://localhost:8080/selfworld/music';
 export const OPEN_SLIDEBAR = 'OPEN_SLIDEBAR';
 export const CLOSE_SLIDEBAR = 'CLOSE_SLIDEBAR';
 export const GET_MUSIC_DURATION = 'GET_MUSIC_DURATION';
+// 窗体自适应
+export const CHANGE_WINDOW_SIZE = 'CHANGE_WINDOW_SIZE';
+
+export function changeWindowSize(width, height) {
+    return {
+        type: CHANGE_WINDOW_SIZE,
+        width,
+        height
+    };
+}
 
 // 初始化播放器
 export function initPlayer() {

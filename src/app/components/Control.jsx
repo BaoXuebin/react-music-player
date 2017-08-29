@@ -32,7 +32,18 @@ class Control extends React.Component {
         const isLoading = this.props.playStatus === 'loading';
         const playType = this.getPlayType();
         const currentTime = this.props.duration * this.props.progress;
-        const mute = this.props.mute;
+        const { mute, width } = this.props;
+        let restWidth;
+        let progressWidth;
+        let volumeWidth;
+        if (width < 800) {
+            restWidth = (width * 0.87) - 300;
+            progressWidth = (restWidth * 100) / width;
+        } else {
+            restWidth = (width * 0.87) - 320;
+            progressWidth = (restWidth * 80) / width;
+            volumeWidth = (restWidth * 20) / width;
+        }
         return (
             <div className="Control">
                 <Button.Group floated="left">
@@ -40,10 +51,22 @@ class Control extends React.Component {
                     <Button loading={isLoading} icon={isPlay ? 'pause' : 'play'} color="red" onClick={this.props.handleChangePlayStatus} />
                     <Button icon="step forward" color="red" onClick={this.props.handleNextSong} />
                 </Button.Group>
-                <CustomProgress percent={this.props.progress} width="53%" inline margin="0 1em 0 2em" handleChangeProgress={this.props.handleChangeProgress} />
+                <CustomProgress percent={this.props.progress} width={`${progressWidth}%`} inline margin="0 1% 0 2%" handleChangeProgress={this.props.handleChangeProgress} />
                 <CustomProgressTime value={currentTime} total={this.props.duration} />
-                <Icon name={mute ? 'volume off' : 'volume down'} size="large" onClick={this.props.handleToggleVolume} />
-                <CustomProgress percent={this.props.volume} color={mute ? 'grey' : 'red'} width="10%" inline handleChangeProgress={this.props.handleChangeVolume} />
+                {
+                    this.props.width >= 800 &&
+                    <Icon name={mute ? 'volume off' : 'volume down'} size="large" onClick={this.props.handleToggleVolume} />
+                }
+                {
+                    this.props.width >= 800 &&
+                    <CustomProgress
+                        percent={this.props.volume}
+                        color={mute ? 'grey' : 'red'}
+                        width={`${volumeWidth}%`}
+                        inline
+                        handleChangeProgress={this.props.handleChangeVolume}
+                    />
+                }
                 <Button.Group floated="right">
                     <Popup
                         trigger={<Button icon={playType.icon} onClick={this.props.handleChangePlayType} />}
@@ -86,14 +109,16 @@ Control.propTypes = {
     handleChangeProgress: PropTypes.func.isRequired,
     handleChangeVolume: PropTypes.func.isRequired,
     handleToggleVolume: PropTypes.func.isRequired,
-    handleToggleListPanel: PropTypes.func.isRequired
+    handleToggleListPanel: PropTypes.func.isRequired,
+    width: PropTypes.number
 };
 Control.defaultProps = {
     playStatus: 'pause',
     playType: 'loop',
     progress: 0,
     volume: 0,
-    duration: 0
+    duration: 0,
+    width: 0
 };
 
 export default Control;
